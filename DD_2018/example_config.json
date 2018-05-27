@@ -1,0 +1,22 @@
+{
+  "architecture": {
+    "1":12,
+    "2":4,
+    "3":1
+  },
+  "activation":{
+    "1":"relu",
+    "2":"relu",
+    "3": "sigmoid"
+  },
+  "init_random":true,
+  "prediction_confidence": 0.7,
+  "learning_rate": 0.01,
+  "iterations": 5000,
+  "regularization":0.0,
+  "seeded": true,
+  "seed": 345,
+  "error_analysis":false,
+  "show_cost": false,
+  "human_expertise":0.99
+}
