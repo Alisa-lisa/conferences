@@ -1,0 +1,19 @@
+[package]
+name = "pyladies_wordcount"
+version = "0.1.0"
+authors = ["alisa <alisa.dammer@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rayon = "1"
+
+[lib]
+name = "pyladies_wordcount"
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = true
+
+[dependencies.pyo3]
+version = "0.5"
+features = ["extension-module"]

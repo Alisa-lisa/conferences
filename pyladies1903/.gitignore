@@ -1,0 +1,4 @@
+*.so
+target/
+*.txt
+heaps/
