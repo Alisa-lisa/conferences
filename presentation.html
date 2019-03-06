@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown>
+					<textarea data-template>
+						# About me
+
+						- Alisa Dammer
+						- mytaxi Data Science Engineer
+						- Use Pyhton for 5+ years
+						- Use Rust for 6 month =)
+						- Tried learning C++98
+					</textarea>
+				</section>
+				<section data-markdown>
+                    <textarea data-template>
+                        # Need for speed
+
+                        - Pypy (not always possible)
+                        - Numpy (also situational)
+                        - C-extensions (not everything is covered)
+                        - CPython (this one I will leave to an expert =))
+                        - Different lanuage
+                    </textarea>
+                </section>
+                <section>Use cases</section>
+                <section>
+                    <section data-markdown>
+                        <textarea data-template>
+                            ### Task 1: Working with text
+    
+                            - count 'Alice|ALICE|...' in 1GB text
+                            - live demo (what can go wrong?+))
+                            - hyperfine for perfomance
+                            - heaptrack for memory
+                        </textarea>
+                    </section>
+                    <section><p>Grep utility</p>
+                        <pre><code>
+hyperfine -r 3 "grep -o -i Alice lol.txt | wc -l"
+Benchmark #1: grep -o -i Alice lol.txt | wc -l
+  Time (mean ± σ):     10.360 s ±  0.013 s
+  Range (min … max):   10.344 s … 10.368 s
+                        </code></pre>  
+                    </section>
+                    <section><p>Python naive</p>
+                        <pre><code>
+hyperfine -r 3 "python main.py naive"
+Benchmark #1: python main.py naive
+  Time (mean ± σ):     70.167 s ±  1.309 s
+  Range (min … max):   69.330 s … 71.675 s  
+                        </code></pre>  
+                    </section>
+                    <section><p>Pyhton smart</p>
+                        <pre><code>
+hyperfine -r 3 "python main.py smart"
+Benchmark #1: python main.py smart
+  Time (mean ± σ):     44.387 s ±  0.544 s 
+  Range (min … max):   44.023 s … 45.012 s
+                        </code></pre>  
+                    </section>
+                    <section><p>Sequential Rust</p>
+                        <pre><code>
+hyperfine -r 3 "python main.py seq"
+Benchmark #1: python main.py seq
+  Time (mean ± σ):     43.251 s ±  0.437 s
+  Range (min … max):   42.784 s … 43.650 s
+                        </code></pre>  
+                    </section>
+                    <section><p>Parallel Rust</p>
+                        <pre><code>
+hyperfine -r 3 "python main.py rayon"
+Benchmark #1: python main.py rayon
+  Time (mean ± σ):      9.216 s ±  0.040 s
+  Range (min … max):    9.170 s …  9.242 s
+                        </code></pre>  
+                    </section>
+                    <section><p>Rust grep</p>
+                        <pre><code>
+hyperfine -r 3 "rg -c -i Alice lol.txt"
+Benchmark #1: rg -c -i Alice lol.txt
+  Time (mean ± σ):     902.4 ms ±  39.7 ms
+  Range (min … max):   874.2 ms … 947.8 ms
+                        </code></pre>  
+                    </section>
+                </section>
+				<section>
+					<section data-markdown>
+						<textarea data-temlate>
+						### Task2: Monte-Carlo pi computation
+
+pi = 4 * (inside points / total points) 
+						</textarea>
+					</section>
+					<section>
+                        <canvas data-chart="bar">
+							Implementation, cpython 3.6, cython, pypy3, Rust Singlethreaded, Rust Multithreaded
+							Runtime in seconds, 247.18, 114.3, 42, 4.95, 1.74                                  
+                        </canvas>
+					</section>	
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						# Improvements?
+
+						- faster functions
+						- better memory handling
+						- SIMD
+						- async
+					</textarea>
+				</section>
+                <section data-markdown>
+                    <textarea data-template>
+                        # Limitations
+
+                        - nightly dependency
+                        - complexity
+                        - calls frequency
+                        - not compatible with pypy
+                        - typing systems hell
+                    </textarea>
+                </section>
+				<section data-markdown>
+					<textarea data-template>
+						# Resources
+
+						- PyO3: https://pyo3.rs/
+						- PyO3 git: https://github.com/PyO3/pyo3
+						- Pi example: https://github.com/svenstaro/talks
+						- This presentation: https://github.com/Alisa-lisa/conferences/pyladies1903
+					</textarea>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+        			{ src: 'plugin/chart/Chart.min.js' },               
+                    { src: 'plugin/chart/csv2chart.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				],
+    			chart: {
+            		defaults: { 
+                        global: {
+							title: { fontColor: "#FFF" }, 
+                            legend: {labels: { fontColor: "#FFF" },},
+						},
+                        scale: { 
+							scaleLabel: { fontColor: "#FFF" }, 
+                            gridLines: { color: "#FFF", zeroLineColor: "#FFF" }, 
+                            ticks: { fontColor: "#FFF" }, 
+                        } 
+                    },
+            		line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ]}, 
+            		bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]}, 
+            		pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+            		radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]}, 
+        		},
+			});
+		</script>
+	</body>
+</html>
