@@ -15,3 +15,4 @@ Use Makefile for all commands.
 - valgrind
 - kcachegrind
 - rust nightly: `https://doc.rust-lang.org/1.15.1/book/nightly-rust.html`
+- heaptrack
