@@ -7,29 +7,43 @@ use chrono;
 mod user;
 mod request;
 mod driver;
+mod clock;
+
 
 struct MainState {
     rng: SmallRng,
+    clock: clock::Clock,
     users: HashMap<u32, user::User>,
     cars: HashMap<u32, driver::Driver>,
+    requests: HashMap<String, request::Request>,
 }
 
 impl MainState {
     fn new(_ctx: &mut Context) -> GameResult<MainState> {
         let mut rng = SmallRng::from_rng(thread_rng()).unwrap();
+        let mut clock = clock::Clock{lifetime: 1200, now: 0};
         let mut users = user::spawn(1, &mut rng);
         let mut cars = driver::spawn(1, &mut rng);
-        let mut s = MainState{rng, users, cars};
+        let mut requests = HashMap::new();
+        let mut s = MainState{rng, clock, users, cars, requests};
         Ok(s)
     }
 }
 
 impl event::EventHandler for MainState {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         for (i, ref mut user) in self.users.iter_mut() {
-            let contract = user.update(&mut self.rng);
+            let contract = user.update(&mut self.rng, self.clock.now);
+            if contract.is_some() {
+                let rofl = contract.unwrap();
+                self.requests.insert(rofl.id.clone(), rofl);
+            }
+        }
+        for (i, ref mut req) in self.requests.iter_mut() {
+            req.update(self.clock.now);
         }
 
+        self.clock.tick();
         Ok(())
     }
 

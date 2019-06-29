@@ -4,6 +4,7 @@
 use rand::prelude::*;
 use std::collections::HashMap;
 use num::clamp;
+use std::vec::Vec;
 use uuid::Uuid;
 use chrono::{DateTime, Utc};
 
@@ -14,6 +15,8 @@ pub struct User {
     pub determination: bool,
     pub pos: (f32, f32),
     pub picked: bool,
+    pub current_request: String,
+    pub requests: Vec<request::Request>,
 }
 
 impl User {
@@ -40,7 +43,7 @@ impl User {
         }
     }
 
-    pub fn update(&mut self, rng: &mut SmallRng) -> Option<request::Request>{
+    pub fn update(&mut self, rng: &mut SmallRng, tick: u32) -> Option<request::Request>{
         // check determintaion -> spawn a request
         let ride_dice_roll = rng.gen_bool(1.0 / 360.0);
         let mut request = None;
@@ -50,10 +53,15 @@ impl User {
             }
             else {
                 let dest = self.want_to_drive(rng);
-                let request = Some(request::Request{id: Uuid::new_v4().to_string(), 
+                let req = request::Request{id: Uuid::new_v4().to_string(), 
                     status: request::Status::Open,
                     pickup: self.pos, dropoff: dest, 
-                    created: Utc::now()});
+                    created: Utc::now(),
+                    created_tick: tick,
+                    lifetime: rng.gen_range(150, 900)};
+                self.requests.push(req.clone());
+                self.current_request = req.id.clone();
+                request = Some(req);
             }
         }
         request
@@ -63,7 +71,10 @@ impl User {
 pub fn spawn(number: u32, rng: &mut SmallRng) -> HashMap<u32, User> {
     let mut res = HashMap::new();
     for u in 1..number+1 {
-        res.insert(u, User{id: u, determination: false, pos: (rng.gen_range(0.0, 800.0), rng.gen_range(0.0, 600.0)), picked: false});
+        res.insert(u, User{id: u, determination: false, 
+            pos: (rng.gen_range(0.0, 800.0), 
+                  rng.gen_range(0.0, 600.0)), 
+            picked: false, current_request: "na".to_string(), requests: Vec::new()});
 
     }
     res
