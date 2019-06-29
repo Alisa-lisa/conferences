@@ -4,6 +4,8 @@
 use rand::prelude::*;
 use std::collections::HashMap;
 use num::clamp;
+use uuid::Uuid;
+use chrono::{DateTime, Utc};
 
 use crate::request;
 
@@ -48,7 +50,10 @@ impl User {
             }
             else {
                 let dest = self.want_to_drive(rng);
-                let request = Some(request::Request::new(pickup: (self.pos.0, self.pos.1), dropoff: dest));
+                let request = Some(request::Request{id: Uuid::new_v4().to_string(), 
+                    status: request::Status::Open,
+                    pickup: self.pos, dropoff: dest, 
+                    created: Utc::now()});
             }
         }
         request

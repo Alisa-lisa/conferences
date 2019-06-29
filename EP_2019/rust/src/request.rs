@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 
 #[derive(PartialEq)]
-enum Status {
+pub enum Status {
     Open,
     Progress,
     Finished,
