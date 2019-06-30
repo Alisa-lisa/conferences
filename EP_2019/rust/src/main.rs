@@ -33,14 +33,7 @@ impl MainState {
 impl event::EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         for (i, ref mut user) in self.users.iter_mut() {
-            let contract = user.update(&mut self.rng, self.clock.now);
-            if contract.is_some() {
-                let rofl = contract.unwrap();
-                self.requests.insert(rofl.id.clone(), rofl);
-            }
-        }
-        for (i, ref mut req) in self.requests.iter_mut() {
-            req.update(self.clock.now);
+            user.update(&mut self.rng, self.clock.now);
         }
 
         self.clock.tick();

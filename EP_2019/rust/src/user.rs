@@ -15,8 +15,7 @@ pub struct User {
     pub determination: bool,
     pub pos: (f32, f32),
     pub picked: bool,
-    pub current_request: String,
-    pub requests: Vec<request::Request>,
+    pub current_request: Option<request::Request>,
 }
 
 impl User {
@@ -43,9 +42,9 @@ impl User {
         }
     }
 
-    pub fn update(&mut self, rng: &mut SmallRng, tick: u32) -> Option<request::Request>{
-        // check determintaion -> spawn a request
-        let ride_dice_roll = rng.gen_bool(1.0 / 360.0);
+    pub fn spawn_request(&mut self, rng: &mut SmallRng, tick: u32) -> Option<request::Request> {
+        // create a request if decided to go somewhere
+        let ride_dice_roll = rng.gen_bool(1.0 / 1.0);
         let mut request = None;
         if !self.determination {
             if !ride_dice_roll {
@@ -58,13 +57,30 @@ impl User {
                     pickup: self.pos, dropoff: dest, 
                     created: Utc::now(),
                     created_tick: tick,
-                    lifetime: rng.gen_range(150, 900)};
-                self.requests.push(req.clone());
-                self.current_request = req.id.clone();
+                    lifetime: rng.gen_range(100, 120)};
+                self.current_request = Some(req.clone());
                 request = Some(req);
             }
         }
         request
+    }
+
+    pub fn update(&mut self, rng: &mut SmallRng, tick: u32) {
+        // check determintaion -> spawn a request
+        if self.current_request.is_some() {
+            self.current_request = Some(self.current_request.unwrap().update());
+            let c_state = self.current_request.clone().unwrap().status;
+            if c_state == request::Status::Cancelled || c_state == request::Status::Finished {
+                self.determination = false;
+                self.current_request = None;
+            }
+        }
+        else {
+            let req = self.spawn_request(rng, tick);
+            if req.is_some() {
+                self.current_request = req;
+            }
+        }
     }
 }
 
@@ -74,7 +90,7 @@ pub fn spawn(number: u32, rng: &mut SmallRng) -> HashMap<u32, User> {
         res.insert(u, User{id: u, determination: false, 
             pos: (rng.gen_range(0.0, 800.0), 
                   rng.gen_range(0.0, 600.0)), 
-            picked: false, current_request: "na".to_string(), requests: Vec::new()});
+            picked: false, current_request: None});
 
     }
     res

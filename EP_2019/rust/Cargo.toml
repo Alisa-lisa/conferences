@@ -12,3 +12,5 @@ rand = "0.6.5"
 chrono = "0.4.7"
 num = "0.2.0"
 uuid = { version = "0.7", features = ["serde", "v4"] }
+serde = { version = "1", features = ["derive"] }
+csv = "1"

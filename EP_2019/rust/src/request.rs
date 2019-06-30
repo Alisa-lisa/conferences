@@ -1,6 +1,6 @@
 use chrono::prelude::{DateTime, Utc};
 use uuid::Uuid;
-
+use std::fmt; 
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Status {
@@ -8,6 +8,17 @@ pub enum Status {
     Progress,
     Finished,
     Cancelled,
+}
+
+impl fmt::Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+       match *self {
+           Status::Open => write!(f, "open"),
+           Status::Progress => write!(f, "progress"),
+           Status::Finished => write!(f, "finish"),
+           Status::Cancelled => write!(f, "cancell"),
+       }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -41,9 +52,18 @@ impl Request {
         self.status = Status::Cancelled;
     }
 
-    pub fn update(&mut self, current_tick: u32) {
-        if current_tick - self.created_tick <= self.lifetime && self.status == Status::Open {
-            self.status = Status::Cancelled;
-        } 
+    pub fn update(&mut self) -> Request {
+        println!("Status {}", self.status);
+        if self.status == Status::Open {
+            // decrease lifetime value by tick
+            self.lifetime -= 1;
+            if self.lifetime <= 0 && self.status != Status::Progress {
+                self.status = Status::Cancelled;
+            }
+        }
+        println!("Lifetime left: {}", self.lifetime);
+        println!("Current status: {}", self.status);
+        let mut res = self.clone();
+        res
     }
 }
