@@ -33,6 +33,7 @@ pub struct Request {
     pub pickup: (f32, f32),
     pub dropoff: (f32, f32),
     pub created: chrono::DateTime<Utc>,
+    pub picked: bool,
     pub created_tick: u32,
     pub lifetime: u32,
 }

@@ -9,23 +9,18 @@ mod request;
 mod driver;
 mod clock;
 
+fn is_equal(first: f32, second: f32) -> bool {
+	let res = first.ceil() == second.ceil();
+	res
+}
 
 // internal functions
-fn assign_random(mut request: request::Request, mut drivers: Vec<driver::Driver>) {
-    // random free car gets the request
-}
-
-
-fn assign_closest() {
-    //
-}
-
 struct MainState {
     rng: SmallRng,
     clock: clock::Clock,
     users: HashMap<u32, user::User>,
     cars: HashMap<u32, driver::Driver>,
-    requests: HashMap<String, request::Request>,
+    requests: Vec<request::Request>,
 }
 
 impl MainState {
@@ -34,7 +29,7 @@ impl MainState {
         let mut clock = clock::Clock{lifetime: 1200, now: 0};
         let mut users = user::spawn(1, &mut rng);
         let mut cars = driver::spawn(1, &mut rng);
-        let mut requests = HashMap::new();
+        let mut requests = Vec::new();
         let mut s = MainState{rng, clock, users, cars, requests};
         Ok(s)
     }
@@ -45,29 +40,63 @@ impl event::EventHandler for MainState {
         for (i, ref mut user) in self.users.iter_mut() {
             let req = user.update(&mut self.rng, self.clock.now);
             if req.is_some() {
-                let mut request = req.unwrap().clone();
-                self.requests.insert(request.id.clone(), request);
+                self.requests.push(req.unwrap());
             }
             else {
                 if user.current_request.is_some() {
-                    let u = user.current_request.clone().unwrap();
-                    let status = self.requests.get(&u).clone();
-                    let s = status.unwrap().clone().status;
-                    if s == request::Status::Cancelled || s == request::Status::Finished {
-                        user.determination = false;
-                        user.current_request = None;
-                    }
                 }
             }
         }
         // helper vec of free drivers
-        let mut free_cars = self.drivers
-        for (i, ref mut req) in self.requests.iter_mut() {
-            req.update()
+        let mut free_drivers = driver::get_free_drivers(&mut self.cars);
+        println!("{}", free_drivers.len());
+        for con in self.requests.iter_mut() {
+            if !con.car_id.is_some() {
+                // TODO: fix this one. contratcs wait if no driver is there
+                let mut fd_id = free_drivers.pop();
+                if fd_id.is_some() {
+                    con.car_id = fd_id.clone();
+                    self.cars.entry(fd_id.unwrap()).and_modify(|d| d.accept_request());
+                }
+            }
+            else {
+
+                if is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.0, con.pickup.0) &&
+                    is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.1, con.pickup.1) {
+                        con.picked = true;
+                        self.users.entry(con.usr_id).and_modify(|u| u.picked = true);
+                    }
+                // driving logic
+                // 1. pickup the passenger
+                if !con.picked {
+                    self.cars.entry(con.car_id.unwrap()).and_modify(|d| d.step(con.pickup));
+
+                }
+                else {
+                    // 2. get user to destination
+                    if !(is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.0, con.dropoff.0) &&
+                         is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.1, con.dropoff.1)) {
+                        self.cars.entry(con.car_id.unwrap()).and_modify(|d| d.step(con.dropoff));
+                    }
+                    // finish request when arrived
+                    else if is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.0, con.dropoff.0) &&
+                        is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.1, con.dropoff.1) {
+                            con.status = request::Status::Finished;
+                            self.cars.entry(con.car_id.unwrap()).and_modify(|d| d.occupied = false);
+                            // teleport user =)
+                            self.users.entry(con.usr_id).and_modify(|u| u.pos = con.dropoff);
+                            self.users.entry(con.usr_id).and_modify(|u| u.determination = false);
+                            self.users.entry(con.usr_id).and_modify(|u| u.picked = false);
+                        }
+                }
+            }
         }
+        // let drivers pickup passengers. TODO: how to work properly with iterator?
+        //tmp_drivers.drain();
+        self.requests.retain(|c| c.status == request::Status::Finished);
 
         self.clock.tick();
-     
+
         Ok(())
     }
 
@@ -111,12 +140,12 @@ impl event::EventHandler for MainState {
         Ok(())
     }
 
-   /* fn stop_event(&mut self, ctx: Context) {
-        if self.clock.is_last_tick() {
-            ggez::quit(ctx);
-        }
-    }
-*/
+    /* fn stop_event(&mut self, ctx: Context) {
+       if self.clock.is_last_tick() {
+       ggez::quit(ctx);
+       }
+       }
+       */
 }
 
 pub fn main() {

@@ -45,3 +45,14 @@ pub fn spawn(number: u32, rng: &mut SmallRng) -> HashMap<u32, Driver> {
     }
     res
 }
+
+/** collect all driver ids that are currently free */
+pub fn get_free_drivers(drivers: &mut HashMap<u32, Driver>) -> Vec<u32> {
+    let mut res = Vec::new();
+    for (id, ref driver) in drivers.iter() {
+        if !driver.occupied {
+            res.push(*id);
+        }
+    }
+    res
+}

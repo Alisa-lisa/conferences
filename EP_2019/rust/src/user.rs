@@ -50,6 +50,7 @@ impl User {
             status: request::Status::Open,
             pickup: self.pos, dropoff: dest, 
             created: Utc::now(),
+            picked: false,
             created_tick: tick,
             lifetime: rng.gen_range(300, 620)};
         req
@@ -58,7 +59,7 @@ impl User {
     pub fn update(&mut self, rng: &mut SmallRng, tick: u32) -> Option<request::Request> {
         let mut res = None;
         if !self.determination {
-            let take_a_car = rng.gen_bool(1.0 / 3.0);
+            let take_a_car = rng.gen_bool(1.0 / 360.0);
             if !take_a_car {
                 self.random_walk(rng);
             }
