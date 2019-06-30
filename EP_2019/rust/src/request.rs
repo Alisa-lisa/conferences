@@ -1,3 +1,6 @@
+/**
+ * Request object: keeps an eye on interaction between users and cars
+ * */
 use chrono::prelude::{DateTime, Utc};
 use uuid::Uuid;
 use std::fmt; 
@@ -48,7 +51,9 @@ impl Request {
         self.status = Status::Cancelled;
     }
 
-    pub fn update(&mut self) -> Request {
+    pub fn update(&mut self) {
+        // cehcks if the request changes states
+        // no acceptance
         if self.status == Status::Open {
             // decrease lifetime value by tick
             self.lifetime -= 1;
@@ -56,7 +61,5 @@ impl Request {
                 self.status = Status::Cancelled;
             }
         }
-        let mut res = self.clone();
-        res
     }
 }

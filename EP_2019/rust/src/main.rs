@@ -2,7 +2,6 @@ use ggez::*;
 use ggez::graphics::{DrawMode, Point2};
 use rand::prelude::*;
 use std::collections::HashMap;
-use chrono;
 
 mod user;
 mod request;
@@ -34,13 +33,28 @@ impl event::EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         for (i, ref mut user) in self.users.iter_mut() {
             let req = user.update(&mut self.rng, self.clock.now);
-            //if req.is_some() {
-              //  let request = req.unwrap().clone();
-                //self.requests.insert(request.id.clone(), request);
-            //}
+            if req.is_some() {
+                let request = req.unwrap().clone();
+                self.requests.insert(request.id.clone(), request);
+            }
+            else {
+                if user.current_request.is_some() {
+                    let u = user.current_request.clone().unwrap();
+                    let status = self.requests.get(&u).clone();
+                    let s = status.unwrap().clone().status;
+                    if s == request::Status::Cancelled || s == request::Status::Finished {
+                        user.determination = false;
+                        user.current_request = None;
+                    }
+                }
+            }
+        }
+        for (i, ref mut req) in self.requests.iter_mut() {
+            req.update()
         }
 
         self.clock.tick();
+     
         Ok(())
     }
 
@@ -84,6 +98,12 @@ impl event::EventHandler for MainState {
         Ok(())
     }
 
+   /* fn stop_event(&mut self, ctx: Context) {
+        if self.clock.is_last_tick() {
+            ggez::quit(ctx);
+        }
+    }
+*/
 }
 
 pub fn main() {

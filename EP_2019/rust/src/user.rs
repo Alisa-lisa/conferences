@@ -4,9 +4,8 @@
 use rand::prelude::*;
 use std::collections::HashMap;
 use num::clamp;
-use std::vec::Vec;
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
+use chrono::{Utc};
 
 use crate::request;
 
@@ -52,14 +51,14 @@ impl User {
             pickup: self.pos, dropoff: dest, 
             created: Utc::now(),
             created_tick: tick,
-            lifetime: rng.gen_range(100, 120)};
+            lifetime: rng.gen_range(300, 620)};
         req
     }
 
     pub fn update(&mut self, rng: &mut SmallRng, tick: u32) -> Option<request::Request> {
         let mut res = None;
         if !self.determination {
-            let take_a_car = rng.gen_bool(1.0 / 360.0);
+            let take_a_car = rng.gen_bool(1.0 / 3.0);
             if !take_a_car {
                 self.random_walk(rng);
             }
