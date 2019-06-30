@@ -1,6 +1,4 @@
-/**
- * Request object: keeps an eye on interaction between users and cars
- * */
+//! Request object: keeps an eye on interaction between users and cars
 use chrono::prelude::{DateTime, Utc};
 use uuid::Uuid;
 use std::fmt; 

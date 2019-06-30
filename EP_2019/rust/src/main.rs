@@ -1,7 +1,7 @@
 use ggez::*;
 use ggez::graphics::{DrawMode, Point2};
 use rand::prelude::*;
-use rand::seq::SliceRandom;
+
 use std::collections::HashMap;
 
 mod user;
@@ -26,17 +26,17 @@ struct MainState {
 impl MainState {
     fn new(_ctx: &mut Context) -> GameResult<MainState> {
         let mut rng = SmallRng::from_rng(thread_rng()).unwrap();
-        let mut clock = clock::Clock{lifetime: 1200, now: 0};
-        let mut users = user::spawn(1, &mut rng);
-        let mut cars = driver::spawn(1, &mut rng);
-        let mut requests = Vec::new();
-        let mut s = MainState{rng, clock, users, cars, requests};
+        let clock = clock::Clock{lifetime: 1200, now: 0};
+        let users = user::spawn(1, &mut rng);
+        let cars = driver::spawn(1, &mut rng);
+        let requests = Vec::new();
+        let s = MainState{rng, clock, users, cars, requests};
         Ok(s)
     }
 }
 
 impl event::EventHandler for MainState {
-    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+    fn update(&mut self, _: &mut Context) -> GameResult<()> {
         // spawn a request if needed
         for (i, ref mut user) in self.users.iter_mut() {
             let req = user.update(&mut self.rng, self.clock.now);
@@ -44,34 +44,35 @@ impl event::EventHandler for MainState {
                 self.requests.push(req.unwrap());
             }
         }
+
         // helper vec of free drivers
         let mut free_drivers = driver::get_free_drivers(&mut self.cars);
-        // update requests -> progress
+
         for r in self.requests.iter_mut() {
             println!("request's car {}", r);
-            // no carr assigned yet
+            // no car assigned yet
             if !r.car_id.is_some() {
                 // TODO: different assign function
                 if free_drivers.len() > 0 {
-                    let mut fd_id = free_drivers.pop();  
+                    let fd_id = free_drivers.pop();  
                     r.car_id = fd_id.clone();
                     self.cars.entry(fd_id.unwrap()).and_modify(|d| d.accept_request());
                     println!("now car is {}", r);
                 }
             }
+
             // some car is assigned to this request
             // checking where the car is by location
-        }
-        for mut r in self.requests.iter_mut(){
             if !r.picked {
                 println!("{}", "WTF");
                 let car = r.car_id.clone().unwrap();
                 if is_equal(self.cars.get(&(car.clone())).unwrap().pos.0, r.pickup.0) &&
                     is_equal(self.cars.get(&(car.clone())).unwrap().pos.1, r.pickup.1) {
+                    dbg!("LOL");
                     r.picked = true;
                     self.users.entry(r.usr_id).and_modify(|u| u.picked = true); // picked attr is for graphics
                 }
-                else{
+                else {
                     println!("{}", "broooom");
                     println!("{}", r);
                     self.cars.entry(car).and_modify(|d| d.step(r.pickup));
@@ -101,7 +102,7 @@ impl event::EventHandler for MainState {
         }
         // let drivers pickup passengers. TODO: how to work properly with iterator?
         //tmp_drivers.drain();
-        self.requests.retain(|c| c.status == request::Status::Finished);
+        //self.requests.retain(|c| c.status == request::Status::Finished);
 
         self.clock.tick();
 
