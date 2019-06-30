@@ -12,6 +12,7 @@ pub struct Driver {
 impl Driver {
     // helper function to identify the direction and make a step
     pub fn step(&mut self, dest: (f32, f32)) {
+        println!("Old location {}/{}", self.pos.0, self.pos.1);
         let x_direction = dest.0 as i32 - self.pos.0 as i32;
         if x_direction != 0 {
             if x_direction < 0 {
@@ -30,6 +31,7 @@ impl Driver {
                 self.pos.1 += 1.0 as f32;
             }
         }
+        println!("New location {}/{}", self.pos.0, self.pos.1);
     }
 
     pub fn accept_request(&mut self) {

@@ -38,6 +38,19 @@ pub struct Request {
     pub lifetime: u32,
 }
 
+impl fmt::Display for Request {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+       if self.car_id.is_some() {
+           let s = format!("{}", self.car_id.clone().unwrap());
+           write!(f, "{}", s)
+       }
+       else {
+           write!(f, "None")
+       }
+    }
+}
+
+
 impl Request {
     pub fn next_phase(&mut self) {
         if self.status == Status::Open {

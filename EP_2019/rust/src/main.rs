@@ -37,59 +37,67 @@ impl MainState {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        // spawn a request if needed
         for (i, ref mut user) in self.users.iter_mut() {
             let req = user.update(&mut self.rng, self.clock.now);
             if req.is_some() {
                 self.requests.push(req.unwrap());
             }
-            else {
-                if user.current_request.is_some() {
-                }
-            }
         }
         // helper vec of free drivers
         let mut free_drivers = driver::get_free_drivers(&mut self.cars);
-        println!("{}", free_drivers.len());
-        for con in self.requests.iter_mut() {
-            if !con.car_id.is_some() {
-                // TODO: fix this one. contratcs wait if no driver is there
-                let mut fd_id = free_drivers.pop();
-                if fd_id.is_some() {
-                    con.car_id = fd_id.clone();
+        // update requests -> progress
+        for r in self.requests.iter_mut() {
+            println!("request's car {}", r);
+            // no carr assigned yet
+            if !r.car_id.is_some() {
+                // TODO: different assign function
+                if free_drivers.len() > 0 {
+                    let mut fd_id = free_drivers.pop();  
+                    r.car_id = fd_id.clone();
                     self.cars.entry(fd_id.unwrap()).and_modify(|d| d.accept_request());
+                    println!("now car is {}", r);
                 }
             }
+            // some car is assigned to this request
+            // checking where the car is by location
+        }
+        for mut r in self.requests.iter_mut(){
+            if !r.picked {
+                println!("{}", "WTF");
+                let car = r.car_id.clone().unwrap();
+                if is_equal(self.cars.get(&(car.clone())).unwrap().pos.0, r.pickup.0) &&
+                    is_equal(self.cars.get(&(car.clone())).unwrap().pos.1, r.pickup.1) {
+                    r.picked = true;
+                    self.users.entry(r.usr_id).and_modify(|u| u.picked = true); // picked attr is for graphics
+                }
+                else{
+                    println!("{}", "broooom");
+                    println!("{}", r);
+                    self.cars.entry(car).and_modify(|d| d.step(r.pickup));
+                }
+            }
+            // on the dropoff way
             else {
-
-                if is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.0, con.pickup.0) &&
-                    is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.1, con.pickup.1) {
-                        con.picked = true;
-                        self.users.entry(con.usr_id).and_modify(|u| u.picked = true);
-                    }
-                // driving logic
-                // 1. pickup the passenger
-                if !con.picked {
-                    self.cars.entry(con.car_id.unwrap()).and_modify(|d| d.step(con.pickup));
-
+                println!("{}", "Should not be here");
+                let car = r.car_id.clone().unwrap();
+                if !(is_equal(self.cars.get(&(car)).unwrap().pos.0, r.dropoff.0) &&
+                    is_equal(self.cars.get(&(car.clone())).unwrap().pos.1, r.dropoff.1)) {
+                    self.cars.entry(car).and_modify(|d| d.step(r.dropoff));
                 }
-                else {
-                    // 2. get user to destination
-                    if !(is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.0, con.dropoff.0) &&
-                         is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.1, con.dropoff.1)) {
-                        self.cars.entry(con.car_id.unwrap()).and_modify(|d| d.step(con.dropoff));
-                    }
-                    // finish request when arrived
-                    else if is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.0, con.dropoff.0) &&
-                        is_equal(self.cars.get(&(con.car_id.clone().unwrap())).unwrap().pos.1, con.dropoff.1) {
-                            con.status = request::Status::Finished;
-                            self.cars.entry(con.car_id.unwrap()).and_modify(|d| d.occupied = false);
-                            // teleport user =)
-                            self.users.entry(con.usr_id).and_modify(|u| u.pos = con.dropoff);
-                            self.users.entry(con.usr_id).and_modify(|u| u.determination = false);
-                            self.users.entry(con.usr_id).and_modify(|u| u.picked = false);
-                        }
+                // finish request when arrived
+                else if is_equal(self.cars.get(&car).unwrap().pos.0, r.dropoff.0) &&
+                    is_equal(self.cars.get(&(car.clone())).unwrap().pos.1, r.dropoff.1) {
+                    r.status = request::Status::Finished;
+                    self.cars.entry(car.clone()).and_modify(|d| d.occupied = false);
+                    // teleport user =)
+                    self.users.entry(r.usr_id).and_modify(|u| u.pos = r.dropoff);
+                    self.users.entry(r.usr_id).and_modify(|u| u.determination = false);
+                    self.users.entry(r.usr_id).and_modify(|u| u.picked = false);
+                    self.users.entry(r.usr_id).and_modify(|u| u.current_request = None);
                 }
             }
+            r.update();
         }
         // let drivers pickup passengers. TODO: how to work properly with iterator?
         //tmp_drivers.drain();
@@ -103,7 +111,7 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
         for (id, ref user) in self.users.iter() {
-            if user.determination {
+            if user.determination && !user.picked {
                 graphics::set_color(ctx, graphics::Color::new(252.0, 20.0, 0.0, 1.0))?;
                 graphics::circle(
                     ctx,
@@ -113,7 +121,7 @@ impl event::EventHandler for MainState {
                     2.0
                 )?;
             }
-            else {
+            else if !user.determination {
                 graphics::set_color(ctx, graphics::Color::new(0.0, 128.0, 0.0, 1.0))?;
                 graphics::circle(
                     ctx,
@@ -122,7 +130,9 @@ impl event::EventHandler for MainState {
                     5.0,
                     2.0
                 )?;
-
+            }
+            else if user.determination && user.picked {
+                // dissapear
             }
         }
         graphics::set_color(ctx, graphics::Color::new(255.0, 0.0, 0.0, 1.0))?;
@@ -140,12 +150,6 @@ impl event::EventHandler for MainState {
         Ok(())
     }
 
-    /* fn stop_event(&mut self, ctx: Context) {
-       if self.clock.is_last_tick() {
-       ggez::quit(ctx);
-       }
-       }
-       */
 }
 
 pub fn main() {
