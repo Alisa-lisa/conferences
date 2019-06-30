@@ -1,6 +1,7 @@
 use ggez::*;
 use ggez::graphics::{DrawMode, Point2};
 use rand::prelude::*;
+use rand::seq::SliceRandom;
 use std::collections::HashMap;
 
 mod user;
@@ -8,6 +9,16 @@ mod request;
 mod driver;
 mod clock;
 
+
+// internal functions
+fn assign_random(mut request: request::Request, mut drivers: Vec<driver::Driver>) {
+    // random free car gets the request
+}
+
+
+fn assign_closest() {
+    //
+}
 
 struct MainState {
     rng: SmallRng,
@@ -34,7 +45,7 @@ impl event::EventHandler for MainState {
         for (i, ref mut user) in self.users.iter_mut() {
             let req = user.update(&mut self.rng, self.clock.now);
             if req.is_some() {
-                let request = req.unwrap().clone();
+                let mut request = req.unwrap().clone();
                 self.requests.insert(request.id.clone(), request);
             }
             else {
@@ -49,6 +60,8 @@ impl event::EventHandler for MainState {
                 }
             }
         }
+        // helper vec of free drivers
+        let mut free_cars = self.drivers
         for (i, ref mut req) in self.requests.iter_mut() {
             req.update()
         }
