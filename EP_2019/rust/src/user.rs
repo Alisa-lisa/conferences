@@ -15,7 +15,7 @@ pub struct User {
     pub determination: bool,
     pub pos: (f32, f32),
     pub picked: bool,
-    pub current_request: Option<request::Request>,
+    pub current_request: Option<String>,
 }
 
 impl User {
@@ -42,45 +42,35 @@ impl User {
         }
     }
 
-    pub fn spawn_request(&mut self, rng: &mut SmallRng, tick: u32) -> Option<request::Request> {
+    pub fn spawn_request(&mut self, rng: &mut SmallRng, tick: u32) -> request::Request {
         // create a request if decided to go somewhere
-        let ride_dice_roll = rng.gen_bool(1.0 / 1.0);
-        let mut request = None;
+        let dest = self.want_to_drive(rng);
+        let req = request::Request{id: Uuid::new_v4().to_string(),
+            usr_id: self.id,
+            car_id: None,
+            status: request::Status::Open,
+            pickup: self.pos, dropoff: dest, 
+            created: Utc::now(),
+            created_tick: tick,
+            lifetime: rng.gen_range(100, 120)};
+        req
+    }
+
+    pub fn update(&mut self, rng: &mut SmallRng, tick: u32) -> Option<request::Request> {
+        let mut res = None;
         if !self.determination {
-            if !ride_dice_roll {
+            let take_a_car = rng.gen_bool(1.0 / 360.0);
+            if !take_a_car {
                 self.random_walk(rng);
             }
             else {
-                let dest = self.want_to_drive(rng);
-                let req = request::Request{id: Uuid::new_v4().to_string(), 
-                    status: request::Status::Open,
-                    pickup: self.pos, dropoff: dest, 
-                    created: Utc::now(),
-                    created_tick: tick,
-                    lifetime: rng.gen_range(100, 120)};
-                self.current_request = Some(req.clone());
-                request = Some(req);
+                let req = self.spawn_request(rng, tick);
+                self.determination = true;
+                self.current_request = Some(req.clone().id);
+                res = Some(req);
             }
         }
-        request
-    }
-
-    pub fn update(&mut self, rng: &mut SmallRng, tick: u32) {
-        // check determintaion -> spawn a request
-        if self.current_request.is_some() {
-            self.current_request = Some(self.current_request.unwrap().update());
-            let c_state = self.current_request.clone().unwrap().status;
-            if c_state == request::Status::Cancelled || c_state == request::Status::Finished {
-                self.determination = false;
-                self.current_request = None;
-            }
-        }
-        else {
-            let req = self.spawn_request(rng, tick);
-            if req.is_some() {
-                self.current_request = req;
-            }
-        }
+        res
     }
 }
 

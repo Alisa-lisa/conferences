@@ -24,6 +24,8 @@ impl fmt::Display for Status {
 #[derive(Debug, Clone)]
 pub struct Request {
     pub id: String,
+    pub usr_id: u32,
+    pub car_id: Option<u32>,
     pub status: Status,
     pub pickup: (f32, f32),
     pub dropoff: (f32, f32),
@@ -33,12 +35,6 @@ pub struct Request {
 }
 
 impl Request {
-    pub fn new(pickup: (f32, f32), dropoff: (f32, f32)) -> Request {
-        Request{id: Uuid::new_v4().to_string(), status: Status::Open,
-        pickup: pickup, dropoff: dropoff, created: Utc::now(), created_tick: 0, 
-        lifetime: 900}
-    }
-
     pub fn next_phase(&mut self) {
         if self.status == Status::Open {
             self.status = Status::Progress;
@@ -53,7 +49,6 @@ impl Request {
     }
 
     pub fn update(&mut self) -> Request {
-        println!("Status {}", self.status);
         if self.status == Status::Open {
             // decrease lifetime value by tick
             self.lifetime -= 1;
@@ -61,8 +56,6 @@ impl Request {
                 self.status = Status::Cancelled;
             }
         }
-        println!("Lifetime left: {}", self.lifetime);
-        println!("Current status: {}", self.status);
         let mut res = self.clone();
         res
     }
