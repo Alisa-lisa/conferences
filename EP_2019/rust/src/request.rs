@@ -5,6 +5,12 @@ use std::fmt;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Status {
+    // Request can be in several states of execution
+    //
+    // Open: no progress, car is not assigned
+    // Progress: car is benig assigned and is moving
+    // Finished: request is successfully closed, passenger moved
+    // Cancelled: request expired before car assignment
     Open,
     Progress,
     Finished,
@@ -24,18 +30,29 @@ impl fmt::Display for Status {
 
 #[derive(Debug, Clone)]
 pub struct Request {
-    pub id: String,
+    // Main object controlling the logic flow
+    //
+    // id: unique identifyer of the Request
+    // usr_id : u32 id uo user spawned this requrest
+    // car_id: u32 id of the assigned car, is None untill assigned
+    // status: enum progress of the request
+    // pickup: tuple of f32 coordinates
+    // dropoff: tuple of f32 coordinates
+    // picked: bool is the passenger being transported
+    // cerated_tick: u32 clock step when the request was spawned
+    // lifetime: u32 how long a passenger can wait untill the request is assigned to a car
+    pub id: u32,
     pub usr_id: u32,
     pub car_id: Option<u32>,
     pub status: Status,
     pub pickup: (f32, f32),
     pub dropoff: (f32, f32),
-    pub created: chrono::DateTime<Utc>,
     pub picked: bool,
     pub created_tick: u32,
     pub lifetime: u32,
 }
 
+// implementing format trait for custom object
 impl fmt::Display for Request {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
        if self.car_id.is_some() {
@@ -50,6 +67,7 @@ impl fmt::Display for Request {
 
 
 impl Request {
+    // move request to the next state (O->P->F)
     pub fn next_phase(&mut self) {
         if self.status == Status::Open {
             self.status = Status::Progress;
@@ -59,12 +77,8 @@ impl Request {
         }
     }
 
-    pub fn cancel(&mut self) {
-        self.status = Status::Cancelled;
-    }
-
+    // cehck if the request changes states
     pub fn update(&mut self) {
-        // cehcks if the request changes states
         // no acceptance
         if self.status == Status::Open {
             // decrease lifetime value by tick

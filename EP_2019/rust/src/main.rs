@@ -8,13 +8,8 @@ mod user;
 mod request;
 mod driver;
 mod clock;
+mod utils;
 
-fn is_equal(first: f32, second: f32) -> bool {
-    let res = first.ceil() == second.ceil();
-    res
-}
-
-// internal functions
 struct MainState {
     rng: SmallRng,
     clock: clock::Clock,
@@ -28,7 +23,7 @@ impl MainState {
         let mut rng = SmallRng::from_rng(thread_rng()).unwrap();
         let clock = clock::Clock{lifetime: 1200, now: 0};
         let users = user::spawn(10, &mut rng);
-        let cars = driver::spawn(3, &mut rng);
+        let cars = driver::spawn(30, &mut rng);
         let requests = Vec::new();
         let s = MainState{rng, clock, users, cars, requests};
         Ok(s)
@@ -64,8 +59,7 @@ impl event::EventHandler for MainState {
             else {
                 if !r.picked {
                     let car = r.car_id.clone().unwrap();
-                    if is_equal(self.cars.get(&(car.clone())).unwrap().pos.0, r.pickup.0) &&
-                        is_equal(self.cars.get(&(car.clone())).unwrap().pos.1, r.pickup.1) {
+                    if utils::is_equal(self.cars.get(&car).unwrap().pos, r.pickup) {
                             r.picked = true;
                             self.users.entry(r.usr_id).and_modify(|u| u.picked = true); // picked attr is for graphics
                         }
@@ -76,13 +70,11 @@ impl event::EventHandler for MainState {
                 // on the dropoff way
                 else {
                     let car = r.car_id.clone().unwrap();
-                    if !(is_equal(self.cars.get(&(car)).unwrap().pos.0, r.dropoff.0) &&
-                         is_equal(self.cars.get(&(car.clone())).unwrap().pos.1, r.dropoff.1)) {
+                    if !utils::is_equal(self.cars.get(&car).unwrap().pos, r.dropoff) {
                         self.cars.entry(car).and_modify(|d| d.step(r.dropoff));
                     }
                     // finish request when arrived
-                    else if is_equal(self.cars.get(&car).unwrap().pos.0, r.dropoff.0) &&
-                        is_equal(self.cars.get(&(car.clone())).unwrap().pos.1, r.dropoff.1) {
+                    else if utils::is_equal(self.cars.get(&car).unwrap().pos, r.dropoff) {
                             // TODO: log finished requests
                             r.status = request::Status::Finished;
                             self.cars.entry(car.clone()).and_modify(|d| d.occupied = false);
