@@ -32,7 +32,7 @@ impl fmt::Display for Status {
 pub struct Request {
     // Main object controlling the logic flow
     //
-    // id: unique identifyer of the Request
+    // id: unique identifyer of the Request uuid.to_string()
     // usr_id : u32 id uo user spawned this requrest
     // car_id: u32 id of the assigned car, is None untill assigned
     // status: enum progress of the request
@@ -41,7 +41,7 @@ pub struct Request {
     // picked: bool is the passenger being transported
     // cerated_tick: u32 clock step when the request was spawned
     // lifetime: u32 how long a passenger can wait untill the request is assigned to a car
-    pub id: u32,
+    pub id: String,
     pub usr_id: u32,
     pub car_id: Option<u32>,
     pub status: Status,

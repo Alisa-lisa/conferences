@@ -21,7 +21,7 @@ struct MainState {
 impl MainState {
     fn new(_ctx: &mut Context) -> GameResult<MainState> {
         let mut rng = SmallRng::from_rng(thread_rng()).unwrap();
-        let clock = clock::Clock{lifetime: 1200, now: 0};
+        let clock = clock::Clock{lifetime: 120, now: 0};
         let users = user::spawn(10, &mut rng);
         let cars = driver::spawn(30, &mut rng);
         let requests = Vec::new();
@@ -31,7 +31,7 @@ impl MainState {
 }
 
 impl event::EventHandler for MainState {
-    fn update(&mut self, _: &mut Context) -> GameResult<()> {
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         // spawn a request if needed
         for (_, ref mut user) in self.users.iter_mut() {
             let req = user.update(&mut self.rng, self.clock.now);
@@ -94,6 +94,10 @@ impl event::EventHandler for MainState {
 
         self.clock.tick();
 
+        // stop simulation after last clock tick
+        if self.clock.is_last_tick() {
+            ctx.quit();
+        }
         Ok(())
     }
 
