@@ -1,4 +1,4 @@
-import pygame as pg
+import EP_2019.python.pygame as pg
 
 WIDTH = 400
 HEIGHT = 400
