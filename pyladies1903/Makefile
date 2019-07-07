@@ -4,27 +4,27 @@ build:
 
 .PHONY: naive
 naive:
-	hyperfine -r 3 "python main.py lol1.txt naive"
+	hyperfine -r 3 "python main.py lol.txt naive"
 
 .PHONY: simple
 simple:
-	hyperfine -r 3 "python main.py lol1.txt smart"
+	hyperfine -r 3 "python main.py lol.txt smart"
 
 .PHONY: magic
 magic:
-	hyperfine -r 3 "python main.py lol1.txt seq"
+	hyperfine -r 3 "python main.py lol.txt seq"
 
 .PHONY: black-magic
 black-magic:
-	hyperfine -r 3 "python main.py lol1.txt rayon"
+	hyperfine -r 3 "python main.py lol.txt rayon"
 
 .PHONY: grepgrep
 grepgrep:
-	hyperfine -r 3 "grep -o -i Alice lol1.txt | wc -l"
+	hyperfine -r 3 "grep -o -i Alice lol.txt | wc -l"
 
 .PHONY: darkest-magic
 darkest-magic:
-	hyperfine -w 1 -r 3 "rg -c -i Alice lol1.txt"
+	hyperfine -w 1 -r 3 "rg -c -i Alice lol.txt"
 
 .PHONY: test1
 test1:
