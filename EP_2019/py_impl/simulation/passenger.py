@@ -2,6 +2,7 @@
 from uuid import uuid4
 from simulation.request import Request
 import random
+import numpy as np
 
 
 class Passenger:
@@ -17,7 +18,7 @@ class Passenger:
         """
 
         if not self.awaiting:
-            if bool(random.choice([0, 1])):
+            if bool(np.random.choice([False, True], p=[0.8, 0.2])):
                 self.awaiting = True
                 return Request(uuid4(),
                                self.id,
