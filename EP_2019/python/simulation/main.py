@@ -1,16 +1,18 @@
-from .car import Car
-from .passenger import Passenger
-from .core import World, Clock
+from car import Car, spawn_drivers
+from passenger import spawn_passengers
+from core import World, Clock
 
-HEIGHT = 100
-WIDTH =100
+conf = {
+    "x": 100,
+    "y": 100
+}
 
-clock = Clock("2019-07-08T00:00:00", "2019-07-08TOO:O2:00")
+clock = Clock("2019-07-08T00:00:00", "2019-07-08T00:00:10")
 
 if __name__ == '__main__':
-    world = World([WIDTH, HEIGHT], clock=clock)
-    world.register_drivers(Car.spawn_drivers(5, WIDTH, HEIGHT))
-    world.register_passengers(Passenger.spawn_passengers(15, WIDTH, HEIGHT))
+    world = World([conf['x'], conf['y']], clock=clock)
+    world.register_drivers(spawn_drivers(5, conf['x'], conf['y']))
+    world.register_passengers(spawn_passengers(15, conf['x'], conf['y']))
     world.run()
 
 # TODO: io reporting
