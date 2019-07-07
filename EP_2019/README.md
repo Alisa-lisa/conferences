@@ -5,7 +5,7 @@
 - 200 cars
 - 1000 users
 - 0.2 probability to spawn a request
-
+- random free car is assigned to the first pending request in the dict/hashmap
 
 ### Python
 ##### Tests
@@ -24,6 +24,7 @@ Benchmark #1: python main.py
 ```
 
 #### Memory usage
+`heaptrack python main.py`
 ![Memory allocation](python_memory.png "Allocated Heap")
 
 
