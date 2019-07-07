@@ -7,12 +7,12 @@ conf = {
     "y": 100
 }
 
-clock = Clock("2019-07-08T00:00:00", "2019-07-08T00:00:10")
+clock = Clock("2019-07-08T00:00:00", "2019-07-08T00:09:00")
 
 if __name__ == '__main__':
     world = World([conf['x'], conf['y']], clock=clock)
-    world.register_drivers(spawn_drivers(5, conf['x'], conf['y']))
-    world.register_passengers(spawn_passengers(15, conf['x'], conf['y']))
+    world.register_drivers(spawn_drivers(1, conf['x'], conf['y']))
+    world.register_passengers(spawn_passengers(2, conf['x'], conf['y']))
     world.run()
 
 # TODO: io reporting

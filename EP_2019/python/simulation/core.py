@@ -42,7 +42,15 @@ class Clock:
         return self.now >= self.num_ticks
 
     def current_time_formatted(self):
-        return (self.start + relativedelta(second=self.now)).isoformat()
+        """
+        Return current clock tick as string timestamp
+        :return: str
+        """
+        m_r, s = divmod(self.now, 60)
+        h_r, m = divmod(m_r, 60)
+        d_r, h = divmod(h_r, 24)
+        m_r, d = divmod(d_r, 30)
+        return (self.start + relativedelta(days=d, hours=h, minutes=m, second=s)).isoformat()
 
 
 class World:
@@ -69,17 +77,13 @@ class World:
         self.passengers = passengers
 
 
-    def run(self):
+    def run(self, log=True):
         while not self.clock.is_last_tick():
             # spawn requests from users
-
             for p_id, p in self.passengers.items():
                 req = p.update(self.world_x, self.world_y)
                 if req is not None:
                     self.requests["pending"][req.id] = req
-
-            print("tick {}".format(self.clock.now))
-            print("pending requests {}".format(len(self.requests["pending"].keys())))
 
             # start assigning pending requests to cars
             free_tmp = list(self.cars["free"].keys())
@@ -92,6 +96,9 @@ class World:
                     req.progress = True
                     assigned_req.append(req.id)
                     assigned_car.append(id)
+                    print(self.clock.now)
+                    print("At {} Request {} was assigned to a car {}".format(self.clock.current_time_formatted(),
+                                                                             req_id, id))
 
             # change state of the assigned requests and cars
             # TODO: put into one update state function
@@ -103,12 +110,6 @@ class World:
                 self.cars["occupied"][c_id] = self.cars["free"][c_id]
                 del self.cars["free"][c_id]
 
-
-            print("free cars left {}".format(self.cars["free"]))
-            print("assigned requests {}".format(len(self.requests["progress"].keys())))
-            print("pending requests {}".format(len(self.requests["pending"].keys())))
-
-
             # TODO: put it into request update function
             # "move" requests that are in progress
             for req in self.requests["progress"].values():
@@ -117,20 +118,21 @@ class World:
             for req in self.requests["pending"].values():
                 req.lifetime -= self.clock.step
 
-
             # check on progress or cancellation
             finished_req = []
             freed_cars = []
             for req_id, req in self.requests["progress"].items():
-                if req.execution_time <= 0:
+                if req.execution_time == 0:
                     finished_req.append(req_id)
                     freed_cars.append(req.driver_id)
+                    print(self.clock.now)
+                    print("At {} Request {} was fulfilled".format(self.clock.current_time_formatted(), req_id))
             cancelled_req = []
             for req_id, req in self.requests["pending"].items():
-                if req.lifetime <= 0:
+                if req.lifetime == 0:
                     cancelled_req.append(req_id)
-                    freed_cars.append(req.driver_id)
-
+                    print(self.clock.now)
+                    print("At {} Request {} was cancelled".format(self.clock.current_time_formatted(), req_id))
 
             # TODO: global update function
             for r_id in finished_req:
@@ -143,62 +145,9 @@ class World:
                 else:
                     print("WTF")
 
-            print("fulfilled requests {}".format(len(self.requests["finished"].keys())))
-            print("cancelled requests {}".format(len(self.requests["cancelled"].keys())))
-
-            print(freed_cars)
+            # update cars state
             for c_id in freed_cars:
                 self.cars["free"][c_id] = self.cars["occupied"][c_id]
                 del self.cars["occupied"][c_id]
 
-
-
-
-                        #     for req_id in self.active_req.keys():
-        #         if not self.active_req[req_id].progress and not self.active_req[req_id].finished:
-        #             if self.free_drivers:
-        #                 new_request = self.active_req[req_id]
-        #                 new_request.driver_id = self.free_drivers[0]
-        #                 new_request.progress = True
-        #                 self.active_req[req_id] = new_request
-        #                 del self.free_drivers[0]
-        #             else:
-        #                 pass  # we wait
-        #         else:
-        #             # pickup
-        #             new_driver = self.all_drivers[self.active_req[req_id].driver_id]
-        #             new_driver.position = self.active_req[req_id].pickup
-        #             self.all_drivers[self.active_req[req_id].driver_id] = new_driver
-        #             self.active_req[req_id].picked = True
-        #
-        #             # deliver
-        #             # update driver
-        #             new_driver.position = self.active_req[req_id].destination
-        #             new_driver.free = True
-        #             self.all_drivers[self.active_req[req_id].driver_id] = new_driver  # not a smart update of a drivers structure
-        #             self.free_drivers.append(self.active_req[req_id].driver_id)
-        #             # update passenger
-        #             new_passenger = self.passengers[self.active_req[req_id].passenger]
-        #             new_passenger.position = self.active_req[req_id].destination
-        #             self.passengers[self.active_req[req_id].passenger] = new_passenger
-        #             # update request
-        #             self.active_req[req_id].progress = False
-        #             self.active_req[req_id].finished = True
-        #             delivered.append(self.active_req[req_id].passenger)
-        #
-        #             # report request
-        #             if self.active_req[req_id] not in self.requests[self.active_req[req_id].passenger]:
-        #                 self.requests[self.active_req[req_id].passenger].append(self.active_req[req_id])
-        #     self.awaiting = [x for x in self.awaiting if x not in delivered]
-        #
-        #     count -= 1
-        # print("_______________________")
-        # print("End state:")
-        # for p, v in self.requests.items():
-        #     print("Requests for passenger {}".format(p))
-        #     for req in v:
-        #         print("Request: {}".format(req.to_string()))
-
-
-            # update simulation time
             self.clock.tick()
