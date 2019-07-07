@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							### Pipeline
+
+							- data collection
+							- data preparation
+							- feature engineering
+							- feature selection
+							- model training
+							- model evaluation
+							- repeat
+						</textarea>
+					</section>
+					<section data-markdown>
+						<textarea data-template>
+							##### TODO: proper cool picture
+							![Pipeline](bear.png "What is a data pipeline?")
+						</textarea>
+					</section>
+				</section>
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							### Feature Engineering
+
+							Creating new input for a model from existing data
+
+							- domain knowledge
+							- automatic approach
+						</textarea>
+					</section>
+					<section data-markdown>
+						<textarea data-template>
+							### Manual feature engineering
+
+							- timestamp + [holidays](https://pypi.org/project/holidays/)
+							- double click -> senior visitor
+							- Domain knowledge hypothesis
+						</textarea>
+					</section>
+					<section data-markdown>
+						<textarea data-template>
+							### Featuretools
+
+							[Featuretools](https://github.com/Featuretools/featuretools)
+						</textarea>
+					</section>
+
+				</section>
+				<section>Slide 2</section>
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,16 @@
+[package]
+name = "rust"
+version = "0.1.0"
+authors = ["a.dammer <a.dammer@mytaxi.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ggez = "0.4.4"
+rand = "0.6.5"
+chrono = "0.4.7"
+num = "0.2.0"
+uuid = { version = "0.7", features = ["serde", "v4"] }
+serde = { version = "1", features = ["derive"] }
+csv = "1"
