@@ -27,15 +27,3 @@ class Request:
         self.finished = False
         self.lifetime = random.randint(60, 60*5)
         self.execution_time = random.randint(5*60, 30*60)
-
-    def to_string(self):
-        return "Id: {}, passenger: {}, " \
-               "driver: {}," \
-               " progress: {}, " \
-               "picked: {}, " \
-               "finished: {}".format(self.id,
-                                     self.passenger,
-                                     self.driver_id,
-                                     self.progress,
-                                     self.picked,
-                                     self.finished)

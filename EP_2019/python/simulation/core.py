@@ -24,7 +24,8 @@ class Clock:
         Computes total amount of steps simulation has
         :return: int
         """
-        return (self.end - self.start).seconds
+        d = (self.end - self.start)
+        return d.seconds + d.days * 24 * 60 * 60
 
 
     def tick(self):
@@ -54,6 +55,7 @@ class Clock:
 
 
 class World:
+    """ Container binding all together """
     def __init__(self, size, clock):
         self.clock = clock
         self.world_x = int(size[0])
@@ -84,6 +86,9 @@ class World:
                 req = p.update(self.world_x, self.world_y)
                 if req is not None:
                     self.requests["pending"][req.id] = req
+                    if log:
+                        print("At {} Request {} was created by passenger {}".format(self.clock.current_time_formatted(),
+                                                                                req.id, p_id))
 
             # start assigning pending requests to cars
             free_tmp = list(self.cars["free"].keys())
@@ -96,8 +101,8 @@ class World:
                     req.progress = True
                     assigned_req.append(req.id)
                     assigned_car.append(id)
-                    print(self.clock.now)
-                    print("At {} Request {} was assigned to a car {}".format(self.clock.current_time_formatted(),
+                    if log:
+                        print("At {} Request {} was assigned to a car {}".format(self.clock.current_time_formatted(),
                                                                              req_id, id))
 
             # change state of the assigned requests and cars
@@ -125,21 +130,26 @@ class World:
                 if req.execution_time == 0:
                     finished_req.append(req_id)
                     freed_cars.append(req.driver_id)
-                    print(self.clock.now)
-                    print("At {} Request {} was fulfilled".format(self.clock.current_time_formatted(), req_id))
+                    self.passengers[req.passenger].awaiting = False
+                    if log:
+                        print("At {} Request {} was fulfilled".format(self.clock.current_time_formatted(), req_id))
             cancelled_req = []
             for req_id, req in self.requests["pending"].items():
                 if req.lifetime == 0:
                     cancelled_req.append(req_id)
-                    print(self.clock.now)
-                    print("At {} Request {} was cancelled".format(self.clock.current_time_formatted(), req_id))
+                    self.passengers[req.passenger].awaiting = False
+                    if log:
+                        print("At {} Request {} was cancelled".format(self.clock.current_time_formatted(), req_id))
 
             # TODO: global update function
             for r_id in finished_req:
                 if r_id in self.requests["progress"].keys():
                     self.requests["finished"][r_id] = self.requests["progress"][r_id]
                     del self.requests["progress"][r_id]
-                elif r_id in self.requests["pending"].keys():
+                else:
+                    print("WTF")
+            for r_id in cancelled_req:
+                if r_id in self.requests["pending"].keys():
                     self.requests["cancelled"][r_id] = self.requests["pending"][r_id]
                     del self.requests["pending"][r_id]
                 else:
