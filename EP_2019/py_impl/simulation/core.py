@@ -27,7 +27,6 @@ class Clock:
         d = (self.end - self.start)
         return d.seconds + d.days * 24 * 60 * 60
 
-
     def tick(self):
         """
         Increase simulation time by 1 unit
