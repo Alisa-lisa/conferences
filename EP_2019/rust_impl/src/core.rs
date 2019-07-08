@@ -1,0 +1,110 @@
+/// main module binding everyting together
+use std::collections::HashMap;
+use uuid::Uuid;
+
+use crate::car;
+use crate::passenger;
+use crate::request;
+
+#[derive(Default)]
+pub struct Clock {
+    /// Clock is responsible for the timeline of the simulation
+    ///
+    /// ### Parameters:
+    /// - step: u16 smallest time unit step on the time line
+    /// - unit: String time unit applicable for the step
+    /// - start: chrono::DateTime start of the simulation time line
+    /// - end: chrono::DateTime end of the simulation time line
+    /// - now: u64 index of the current step on the timeline
+    /// - number_ticks: u64 total number of steps the simulation will be running 
+    pub step: u16,
+    pub unit: String,
+    pub start: String,
+    pub end: String,
+    //pub start: DateTime<FixedOffset>,
+    //pub end: DateTime<Utc>,     
+    pub now: u64,
+    pub number_ticks: u64,
+}
+
+impl Clock {
+/*    pub fn create(&mut self, start: String, end: String) -> Clock {
+        /// Proper Clock creation withh all values set
+        ///
+        /// Parameters:
+        /// - start: String date time in RFC 3339 format
+        /// - end: String date time in RFC 3339 format
+        ///
+        /// Return: Clock
+        let s = DateTime::parse_from_rfc3339(&start);
+        let e = DateTime::parse_from_rfc3339(&end);
+        let delta = (e - s).clone();
+        println!("{}", delta.second());
+        let clock = Clock{step: 1, unit: "s".to_string(), start: s, end: e, now: 0, number_ticks: 0};
+        clock
+    }
+*/
+    pub fn get_steps(&mut self) -> u64 {
+        // Count total number ticks 
+        120
+    } 
+
+    pub fn tick(&mut self) {
+        // Move step further on the timeline
+        self.now = self.now + self.step as u64;
+    }
+
+    pub fn is_last_tick(&mut self) -> bool {
+        // Checks if the are any steps left on the timeline
+        self.now == self.number_ticks
+    }
+
+    pub fn current_time_formatted(&mut self) -> String {
+        // Present current step as a human readable String
+        //
+        // Return date time string in RFC_3399 format
+        format!("Tick {} is {}", self.now, "TODO")
+    } 
+}
+
+pub struct World {
+    /// World is a container bindign everyting together
+    ///
+    /// ### Parameters:
+    /// - clock: Clock to keep track of the timeline
+    /// - x: u32 width of the box
+    /// - y: u32 height of the box
+    /// - cars: HashMap<u32, Car> all cars present in the simulation
+    /// - passenger: HashMap<u32, Passenger> all passenger present in the simulation
+    /// - requests: HashMap<uuid, Request> all requests created by the passengers
+    pub clock: Clock,
+    pub x: u32, 
+    pub y: u32,
+    pub cars: HashMap<u32, car::Car>,
+    pub passengers: HashMap<u32, passenger::Passenger>,
+    pub requests: HashMap<Uuid, request::Request>,
+}
+
+impl World {
+    pub fn register_car(&mut self, car: car::Car) {
+        // Create supply for simulation
+        self.cars.insert(car.id.clone(), car);
+    }
+
+    pub fn register_passenger(&mut self, passenger: passenger::Passenger) {
+        // Create demand for simulation
+        self.passengers.insert(passenger.id.clone(), passenger);
+    }
+
+    pub fn run(&mut self) {
+        // Main loop of the simulation
+        println!("all ticks {} ", self.clock.number_ticks);
+        while !self.clock.is_last_tick() {
+            println!("{}", "1");
+            // spawn requests from free users
+            println!("{}", self.clock.now);
+            
+            self.clock.tick();
+        }
+    }
+}

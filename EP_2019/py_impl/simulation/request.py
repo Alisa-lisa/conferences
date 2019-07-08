@@ -19,7 +19,6 @@ class Request:
         """
         self.id = id
         self.passenger = passenger
-        self.pickup = pickup
         self.destination = destination
         self.driver_id = -1
         self.progress = False

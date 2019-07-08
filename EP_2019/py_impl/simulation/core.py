@@ -72,13 +72,15 @@ class World:
         }
 
     def register_drivers(self, drivers):
+        """ Create supply """
         self.cars["free"] = drivers
 
     def register_passengers(self, passengers):
+        """ Create demand """
         self.passengers = passengers
 
-
     def run(self, log=True):
+        """ Main loop of the simulation """
         while not self.clock.is_last_tick():
             # spawn requests from users
             for p_id, p in self.passengers.items():

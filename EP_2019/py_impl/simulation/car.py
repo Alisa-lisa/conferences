@@ -8,6 +8,7 @@ class Car:
         self.position = position
         self.free = True
 
+
 def spawn_drivers(number, x, y):
     res = {}
     for i in range(1, number + 1):
