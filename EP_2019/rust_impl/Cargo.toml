@@ -12,3 +12,6 @@ rand = "0.6"
 num = "0.2"
 uuid = { version = "0.7", features = ["serde", "v4"] }
 serde = { version = "1", features = ["derive"] }
+
+[profile.release]
+lto = true
