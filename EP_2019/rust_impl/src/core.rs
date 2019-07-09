@@ -40,6 +40,7 @@ impl Clock {
         let s = DateTime::parse_from_rfc3339(&start).expect("Parsing went wrong");
         let e = DateTime::parse_from_rfc3339(&end).expect("Parsing went wrong");
         let delta = (e - s);
+        println!("{}", delta.num_seconds());
         let clock = Clock{step: 1, unit: "s".to_string(), start: s, end: e, now: 0, number_ticks: delta.num_seconds() as u64};
         clock
     }
@@ -113,7 +114,7 @@ impl World {
                         let id = req.id.clone();
                         self.requests.insert(id.clone(), req);
                         pending.push(id.clone());
-                        if log {
+                        if log && self.clock.now % 10 == 0 {
                             println!("At {} request {} was created by passenger {}", self.clock.now, id.clone(), p_id);
                         }
                     }
@@ -130,7 +131,7 @@ impl World {
                     self.requests.entry(*r_id).and_modify(|r| r.progress = true);
                     self.requests.entry(*r_id).and_modify(|r| r.car_id = car_id);
                     progress.push(r_id.clone());
-                    if log {
+                    if log && self.clock.now % 10 == 0{
                         println!("At {} Request {} was assigned to a car {}", self.clock.now, r_id.clone(), print_id);
                     }
                 }
@@ -146,7 +147,7 @@ impl World {
                         self.requests.entry(*r_id).and_modify(|r| r.finished = true);
                         let p = self.requests.get(r_id).unwrap().passenger.clone();
                         self.passengers.entry(p).and_modify(|p| p.awaiting = false);
-                        if log {
+                        if log && self.clock.now % 10 == 0 {
                             println!("At {} Request {} was cancelled", self.clock.now, r_id);
                         }
                     }
@@ -159,7 +160,7 @@ impl World {
                     if req.execution_time <= 0 {
                         req.finished = true;
                         self.cars.entry(req.car_id.clone().unwrap()).and_modify(|c| c.free = true);
-                        if log {
+                        if log && self.clock.now % 1000 == 0 {
                             println!("At {} Request {} was fulfilled", self.clock.now, r_id);
                         }
                     }

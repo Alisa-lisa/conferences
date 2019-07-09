@@ -29,10 +29,10 @@ Benchmark #1: python main.py
 
 
 #### Ecosystem
-
+- full support
 
 #### Language versions
-
+- 3.6+ suffice for everything
 
 ----
 ### Rust

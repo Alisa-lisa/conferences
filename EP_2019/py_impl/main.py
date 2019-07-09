@@ -8,7 +8,7 @@ conf = {
     "drivers": 200,
     "users": 1000,
     "start": "2019-07-08T00:00:00",
-    "end": "2019-07-09T00:00:00"
+    "end": "2019-07-08T00:01:00"
 }
 
 clock = Clock(conf["start"], conf["end"])
