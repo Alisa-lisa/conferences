@@ -15,8 +15,6 @@ class Request:
         self.id = uuid4()
         self.driver_id = None
         self.remaining_waiting_time = 100
-        # self.remaining_waiting_time = random.randint(60, 60*5)
-        # self.fulfillment_time = random.randint(5*60, 30*60)
         self.fulfillment_time = 100
 
     def is_alive(self):
@@ -106,6 +104,8 @@ class World:
             #                                                                                         len(self.requests["cancelled"]),
             #                                                                                         len(self.requests["finished"])))
 
+
 if __name__ == '__main__':
-    world = World(86400, 0.2, 2000, 200)
+    # world = World(86400, 0.2, 2000, 200)
+    world = World(3600, 0.2, 2000, 200)
     world.run_till_done()

@@ -1,8 +1,5 @@
 use rand::prelude::*;
-use std::collections::HashMap;
-use num::clamp;
 use uuid::Uuid;
-use chrono::{Utc};
 
 use crate::request;
 
@@ -33,7 +30,7 @@ impl Passenger {
                 res = Some(request::Request{id: Uuid::new_v4(),
                 passenger: self.id.clone(),
                 car_id: None,
-                progress: false,
+                in_progress: false,
                 picked: false,
                 finished: false,
                 lifetime: rng.gen_range(60, 300) as u64,
