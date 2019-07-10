@@ -54,6 +54,7 @@ class World:
 
     def distribute_unfulfilled_requests(self):
         """ Try to assign a request to a car """
+        tmp = []
         for r in self.requests["pending"]:
             if len(self.taxis["free"]) > 0:
                 taxi = self.taxis["free"][0]
@@ -62,7 +63,8 @@ class World:
                 self.taxis["free"].remove(taxi)
                 self.taxis["occupied"].append(taxi)
                 self.requests["progress"].append(r)
-        self.requests["pending"] = [r for r in self.requests["pending"] if r not in self.requests["progress"]]
+                tmp.append(r)
+        self.requests["pending"] = [r for r in self.requests["pending"] if r not in tmp]
 
     def update_requests(self):
         """ Count down to request state change """
@@ -95,14 +97,14 @@ class World:
             self.update_requests()
             self.cleanup_requests()
 
-            # print("Age: {}/{}, Taxis: {} Occ/{} Free, Requests: {} Asnd/{} Wai/{} Cld/{} Fin".format(self.age,
-            #                                                                                   self.runtime,
-            #                                                                                   len(self.taxis["occupied"]),
-            #                                                                                   len(self.taxis["free"]),
-            #                                                                                   len(self.requests["pending"]),
-            #                                                                                         len(self.requests["progress"]),
-            #                                                                                         len(self.requests["cancelled"]),
-            #                                                                                         len(self.requests["finished"])))
+            print("Age: {}/{}, Taxis: {} Occ/{} Free, Requests: {} Asnd/{} Wai/{} Cld/{} Fin".format(self.age,
+                                                                                              self.runtime,
+                                                                                              len(self.taxis["occupied"]),
+                                                                                              len(self.taxis["free"]),
+                                                                                              len(self.requests["progress"]),
+                                                                                                    len(self.requests["pending"]),
+                                                                                                    len(self.requests["cancelled"]),
+                                                                                                    len(self.requests["finished"])))
 
 
 if __name__ == '__main__':
