@@ -63,4 +63,6 @@ version.texi
 */src/target/
 
 no_llvm_build
+*.png
 profile_example.py
+env/
