@@ -17,22 +17,34 @@
 * Python specific profilers
 * Language agnostic profilers
 
--> we do not consider APM (application performance monitoring)
-
+1. we do not consider APM (application performance monitoring)
+--------------------------------------------------------------
+2. tracing is a method for profiling
+------------------------------------
 
 ---
 -> Pre-requirements
 ====================
 * how much time does the program actually take?
 -> `hyperfine 'python profile_example.py'`
+* is my algorithm at fault?
+-> `timeit_babe`
+
+---
+-> Performance profiling
+=========================
+* [cProfile](https://docs.python.org/3/library/debug.html)
+-> [snakeviz](https://jiffyclub.github.io/snakeviz/)
+* [pyCallgraph](http://pycallgraph.slowchop.com/en/master/)
+* [valgrind](http://valgrind.org/)
+-> [kcachgrind](http://kcachegrind.sourceforge.net/html/Home.html)
+
+---
+-> Memory profiling
+====================
 * how much memory does the program uses/allocates?
 -> `heaptrack python profile_example.py`
 -> `heaptrack --analyze file_name`
 * more specific for python
 -> `python -m memory_profiler profile_example.py`
----------------------
 
----
--> In-code profilers
-====================
-* [Official docs](https://docs.python.org/3/library/debug.html)
