@@ -10,8 +10,8 @@ To answer this question multiple tools exist. Some of the tools are language spe
 2. [Py-spy](https://github.com/benfred/py-spy)
 3. [Heartrate](https://github.com/alexmojaki/heartrate)
 4. [Pyheat](https://github.com/csurfer/pyheat)
-
+5. [memory_profiler](https://github.com/pythonprofilers/memory_profiler)
 ### Language agnostic tools:
-1. [Heaptrack]()
-2. [Valgrind/Kachegrind]()
-3. [Hyperfine]()
+1. [Heaptrack](https://github.com/KDE/heaptrack)
+2. [Valgrind/Kachegrind](http://valgrind.org/)
+3. [Hyperfine](https://github.com/sharkdp/hyperfine)
