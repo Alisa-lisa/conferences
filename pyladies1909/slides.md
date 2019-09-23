@@ -58,7 +58,7 @@ the established one
 ---
 -> Performance profiling
 =========================
-the ugly bu the real one
+the ugly but the real one
 ------------------------
 * [pyCallgraph](http://pycallgraph.slowchop.com/en/master/)
 -> `pycallgraph graphviz profile_example.py`
