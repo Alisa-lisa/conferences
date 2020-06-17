@@ -1,6 +1,5 @@
 *.so
 target/
-*.txt
 heaps/
 # Byte-compiled / optimized / DLL files
 __pycache__/
