@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gunicron -w 4 app:app
+gunicorn app:app -w 1 -b 0.0.0.0:5000

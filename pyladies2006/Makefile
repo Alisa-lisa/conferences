@@ -6,4 +6,6 @@ setup:
 
 .PHONY: docker-run
 docker-run:
-	docker build -t myapp . && docker run -p 5000:5000 myapp
+	docker-compose up -d --build postgres
+	sleep 3
+	docker-compose up --build app

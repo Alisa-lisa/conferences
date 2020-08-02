@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="shortcut icon" href="http://sstatic.net/so/favicon.ico">
+
+    <title>Budget</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  </head>
+
+  <body>
+    <nav class="navbar is-primary navbar-expand-md navbar-dark fixed-top bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('api.fill_in') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('api.show_tendency') }}">Report<span class="sr-only"></span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="{{ url_for('api.collect_data') }}">Upload</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('api.global_report') }}">Global</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('api.note_down') }}">Journal</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('api.balance') }}">Balance</a>
+          </li>
+          <li>
+            <a class="nav-link" href="{{ url_for('api.logout') }}">Logout</a>
+          </li>
+        </ul>
+        <form class="form-inline mt-2 mt-md-0" method="post">
+         <select class="select is-primary is-small" name="report_dropdown">
+          {% for date in report_dates %}
+            <option value={{ date }}>{{ date }}</option>
+          {% endfor %}
+          </select>
+          <input class="button is-light is-small" type="submit" name="btn" value="go">
+        </form>
+      </div>
+    </nav>
+
+    <main role="main" style="margin-left: 2%; margin-right: 2%; margin-top: 5rem;">
+      <div class="container">
+        <form method="post" action="" style="margin-bottom: 10px">
+          <input class="input is-primary is-medium" type="text" placeholder="activity" name="activity" style="margin-bottom: 10px">
+      <div class="container">
+          <p>type of activity</p>
+          <div class="select is-primary is-medium" style="margin-bottom: 10px">
+            <select name="mfm_catgory">
+                <option value="mastery">mastery</option>
+                <option value="fun">fun</option>
+                <option value="chores">chores</option>
+            </select>
+          </div>
+      </div>
+       <div class="container">
+ 	<p>How stressed are you:</p>
+   	  <div class="select is-primary is-medium" style="margin-bottom: 10px">
+               <select name="stress">
+                  <option value=1>1</option>
+                  <option value=2>2</option>
+                  <option value=3>3</option>
+                  <option value=4>4</option>
+                  <option value=5>5</option>
+                  <option value=6>6</option>
+                  <option value=7>7</option>
+                  <option value=8>8</option>
+                  <option value=9>9</option>
+                  <option value=10>10</option>
+            </select>
+      </div></div>
+       <div class="container">
+ 	<p>How happy are you:</p>
+   	  <div class="select is-primary is-medium" style="margin-bottom: 10px">
+               <select name="happiness">
+                  <option value=1>1</option>
+                  <option value=2>2</option>
+                  <option value=3>3</option>
+                  <option value=4>4</option>
+                  <option value=5>5</option>
+                  <option value=6>6</option>
+                  <option value=7>7</option>
+                  <option value=8>8</option>
+                  <option value=9>9</option>
+                  <option value=10>10</option>
+            </select>
+      </div></div>
+
+          <input class="button is-primary is-medium" type="submit" name="btn" value="save">
+        </form>
+
+      </div>
+     </main>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
