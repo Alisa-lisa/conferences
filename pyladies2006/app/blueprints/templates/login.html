@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="shortcut icon" href="http://sstatic.net/so/favicon.ico">
 
-    <title>Budget</title>
+    <title>Stress tracker pyladies</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
@@ -18,42 +18,12 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('api.fill_in') }}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('api.show_tendency') }}">Report<span class="sr-only"></span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="{{ url_for('api.collect_data') }}">Upload</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('api.global_report') }}">Global</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('api.note_down') }}">Journal</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('api.balance') }}">Balance</a>
-          </li>
-          <li>
-            <a class="nav-link" href="{{ url_for('api.logout') }}">Logout</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
     <div class="container" style="margin-left: 2%; margin-right: 2%; margin-top: 3%;">
       <form method="post">
           <input class="input is-primary is-medium" type="text" placeholder="Login" name="login" style="margin-bottom: 10px">
           <input class="input is-info is-medium" type="text" placeholder="Password" name="password" style="margin-bottom: 10px">
           <input class="button is-primary is-medium" type="submit" name="btn" value="login">
+          <input class="button is-primary is-medium" type="submit" name="btn" value="register">
       </form>
     </div>
 

@@ -1,6 +1,6 @@
 """ User and tokens DAO """
-from self_quantify_app.storage import db
-from self_quantify_app.helpers import hasher
+from storage import db
+from helpers import hasher
 import uuid
 import datetime
 
@@ -17,6 +17,8 @@ class User(db.Model):
     def __init__(self, username, password):
         self.username = username
         self.pwhash = self.set_pwd(password)
+        self.current_auth_token = None
+        self.last_action = None
 
     def __repr__(self):
         return f"User: self.username"
@@ -25,7 +27,9 @@ class User(db.Model):
         return hasher.hash(f"{self.username}{password}")
 
     def verify_pwd(self, password):
-        return hasher.hash(f"{self.username}{password}", self.pwhash)
+        return hasher.verify(f"{self.username}{password}",
+                self.pwhash)
+
 
     def generate_auth_token(self):
         """Generate an auth token and save it to the `current_auth_token` column."""

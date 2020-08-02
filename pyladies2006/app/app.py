@@ -1,7 +1,7 @@
 """ factory method for app creation: 
 https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Factory.html """
-from flask import Flask
-from self_quantify_app.storage import db
+from flask import Flask 
+from storage import db
 import os
 
 
@@ -10,20 +10,19 @@ def app_factory(environment: str) -> Flask:
 
     # app instance
     app = Flask("self-quantify-app-pyladies")
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'postgresql://postgres:postgres@postgres:5432/quantify')
-
-
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'postgresql://localhost:5432/quantify')
+    app.config['SECRET_KEY'] = os.environ.get('SECRET', 'sdohsd&sa!')
+    
     # blueprints a.k.a. functionality
-    from self_quantify_app.blueprints import api
+    from blueprints import api
     app.register_blueprint(api)
 
     # database connection and preparation
     db.init_app(app)
     with app.app_context():
         db.create_all()
-
     return app
 
 
-
-
+environment = os.environ.get('DEPLOYMENT', 'local')
+app = app_factory(environment)
