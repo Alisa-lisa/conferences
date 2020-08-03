@@ -51,5 +51,7 @@ def login():
 @api.route("/logout")
 def logout():
     """ terminate session """
-    pass
+    if 'user' in session:
+        session.pop('user')
+    return redirect(url_for('api.login'))
 

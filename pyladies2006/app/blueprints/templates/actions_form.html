@@ -18,6 +18,26 @@
   </head>
 
   <body>
+    <nav class="navbar is-primary navbar-expand-md navbar-dark fixed-top bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('api.login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('api.quantify') }}">Tracking<span class="sr-only"></span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="{{ url_for('api.logout') }}">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+
     <main role="main" style="margin-left: 2%; margin-right: 2%; margin-top: 5rem;">
       <div class="container">
         <form method="post" action="" style="margin-bottom: 10px">

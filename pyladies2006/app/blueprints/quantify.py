@@ -20,7 +20,6 @@ def quantify():
                 .first()
         # now we associate the form with our active user
         if request.method == "POST":
-            print(request.form)
             try:
                 record = Quantify(usr_id=usr.id, 
                         timestamp=datetime.datetime.now(),
