@@ -13,8 +13,6 @@ logger = logging.getLogger(__name__)
 @api.route("/", methods=["POST", "GET"])
 def login():
     """ Attempt to login for exising user """
-    if 'users' not in session:
-        session['users'] = []
     if request.method == "POST": 
         if request.form["btn"] == "login":
             try:
@@ -28,7 +26,7 @@ def login():
                     # check for token 
                     if token is None:
                         token = usr.generate_auth_token
-                    session['users'].append(usr.current_auth_token)
+                    session['user'] = usr.current_auth_token
                     return redirect(url_for("api.quantify"))
                 else:
                     return render_template("login.html")
