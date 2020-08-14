@@ -13,7 +13,7 @@ class User(db.Model):
     pwhash = db.Column(db.String, unique=True)
     current_auth_token = db.Column(db.String(120), index=True)
     last_action = db.Column(db.DateTime)
-    forms = db.relationship('Quantify', backref='users', lazy=True)
+    forms = db.relationship('Quantify', backref='users', lazy=True, cascade="all, delete")
     
     def __init__(self, username, password):
         self.username = username

@@ -42,7 +42,14 @@ def admin_panel():
                 except Exception as ex:
                     print(f"can not collect data into file due to {ex}")
                     return render_template("admin.html")
-            else:
+            elif request.form["btn"] == "delete user":
+                db.session.delete(usr)
+                db.session.commit()
+                return redirect(url_for("api.logout"))
+            else:  # delete data for thi user
+                # TODO: make sure cascade works the way you think it does
+                db.session.query(Quantify).filter(Quantify.usr_id == usr.id).delete()
+                db.session.commit()
                 return render_template("admin.html")
         else:
             return render_template('admin.html')
