@@ -64,3 +64,4 @@ version.texi
 
 no_llvm_build
 profile_example.py
+*.csv

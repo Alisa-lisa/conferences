@@ -44,51 +44,15 @@
     <main role="main" style="margin-left: 2%; margin-right: 2%; margin-top: 5rem;">
       <div class="container">
         <form method="post" action="" style="margin-bottom: 10px">
-          <input class="input is-primary is-medium" type="text" placeholder="activity" name="activity" style="margin-bottom: 10px">
       <div class="container">
-          <p>type of activity</p>
-          <div class="select is-primary is-medium" style="margin-bottom: 10px">
-            <select name="category">
-                <option value="mastery">mastery</option>
-                <option value="fun">fun</option>
-                <option value="chores">chores</option>
-            </select>
-          </div>
-      </div>
-       <div class="container">
- 	<p>How stressed are you:</p>
-   	  <div class="select is-primary is-medium" style="margin-bottom: 10px">
-               <select name="stress">
-                  <option value=1>1</option>
-                  <option value=2>2</option>
-                  <option value=3>3</option>
-                  <option value=4>4</option>
-                  <option value=5>5</option>
-                  <option value=6>6</option>
-                  <option value=7>7</option>
-                  <option value=8>8</option>
-                  <option value=9>9</option>
-                  <option value=10>10</option>
-            </select>
-      </div></div>
-       <div class="container">
- 	<p>How happy are you:</p>
-   	  <div class="select is-primary is-medium" style="margin-bottom: 10px">
-               <select name="happiness">
-                  <option value=1>1</option>
-                  <option value=2>2</option>
-                  <option value=3>3</option>
-                  <option value=4>4</option>
-                  <option value=5>5</option>
-                  <option value=6>6</option>
-                  <option value=7>7</option>
-                  <option value=8>8</option>
-                  <option value=9>9</option>
-                  <option value=10>10</option>
-            </select>
-      </div></div>
-
-          <input class="button is-primary is-medium" type="submit" name="btn" value="save">
+          <p>Start time of the records</p>
+	  <input class="input is-primary is-medium" type="text" placeholder="2020-08-20T00:00:00" name="start" style="margin-bottom: 10px">
+	  <p>End time of the records</p>
+          <input class="input is-info is-medium" type="text" placeholder="2020-08-20T05:00:00" name="end" style="margin-bottom: 10px">
+	
+          <input class="button is-primary is-medium" type="submit" name="btn" value="download">
+          <input class="button is-primary is-medium" type="submit" name="btn" value="delete data">
+          <input class="button is-primary is-medium" type="submit" name="btn" value="delete user">
         </form>
 
       </div>

@@ -5,3 +5,4 @@ api = Blueprint('api', __name__,
 
 from blueprints.user import *
 from blueprints.quantify import *
+from blueprints.admin import *

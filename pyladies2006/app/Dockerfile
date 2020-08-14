@@ -10,7 +10,6 @@ COPY blueprints/ /app/blueprints/
 COPY storage/ /app/storage/
 COPY run.sh /app
 RUN chmod +x run.sh
-RUN export EXPLAIN_TEMPLATE_LOADING=true
 
 EXPOSE 5000
 
