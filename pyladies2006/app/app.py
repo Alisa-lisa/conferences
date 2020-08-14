@@ -10,7 +10,7 @@ def app_factory(environment: str) -> Flask:
 
     # app instance
     app = Flask("self-quantify-app-pyladies")
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'postgresql://localhost:5432/quantify')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'postgresql://postgres:postgres@postgres:5432/quantify')
     app.config['SECRET_KEY'] = os.environ.get('SECRET', 'sdohsd&sa!')
     
     # blueprints a.k.a. functionality

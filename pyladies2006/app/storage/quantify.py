@@ -13,4 +13,6 @@ class Quantify(db.Model):
     stress = db.Column(db.Integer, nullable=True)  # on the scale 1 to 10 how stressed are you
     happiness = db.Column(db.Integer, nullable=True) # on the scale 1 to 10 how happy are you
 
-     
+    def to_list(self):
+        """ representation of one object in a list format for easier csv write """
+        return [self.timestamp, self.activity, self.category, self.stress, self.happiness]

@@ -1,15 +1,16 @@
 """ admin API to gather data """
 from blueprints import api
-from flask import request, session, jsonify
+from flask import request, session, jsonify, send_file, redirect, url_for
 from storage import db
 from storage.user import User
 from storage.quantify import Quantify
+import csv
 
 """
 flow:
     when registered you can get data with start and end dates
     delete all data for the user
-    delee the user
+    delete the user
 """
 
 @api.route("/admin", methods=["GET", "POST"])
@@ -24,14 +25,19 @@ def admin_panel():
                 try:
                     start = request.form['start']
                     end = request.form['end']
-                    # TODO: download as file to the system
                     results = db.ses.query(Quantify)\
                             .filter(Quantify.usr_id == usr.id)\
                             .filter(Quantify.timestamp >= start)\
                             .filter(Quantify.timestamp < end)
                             .all()
-                    print(jsonify(results))
-                    return jsonify(results)
+                    with open("results.csv", 'wb') as o:
+                        writer = csv.writer(o)
+                        for item in results:
+                            writer.writerow(item.to_list())
+                        return send_file(o)
+        return redirect(url_for('api.quantify'))
+    else:
+        return redirect(url_for('api.login'))
 
 
 

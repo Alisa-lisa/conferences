@@ -1,6 +1,6 @@
 """ User and tokens DAO """
 from storage import db
-from helpers import hasher
+from storage.helpers import hasher
 import uuid
 import datetime
 
