@@ -8,4 +8,4 @@ material to conferebce where I held a talk
 - pyladies1903 - [meetup](https://www.meetup.com/PyLadies-Hamburg/events/258758166/)
 - pyladies1909 - [meetup](https://www.meetup.com/PyLadies-Hamburg/events/264777945/)
 - pyladies20 - [series of workshops](https://github.com/Alisa-lisa/conferences/tree/master/pyladies2006)
-
+- pyberlin2008 - [PyBerlin meetup](https://github.com/Alisa-lisa/conferences/tree/master/pyberlin2008)
