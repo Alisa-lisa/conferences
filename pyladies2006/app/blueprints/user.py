@@ -3,7 +3,7 @@ from flask import redirect, url_for, render_template, request, session
 import logging
 
 from blueprints import api
-from storage.user import User
+from storage.user import User, generate_auth_token
 from storage import db
 import os
 
@@ -25,7 +25,10 @@ def login():
                     token = usr.current_auth_token
                     # check for token 
                     if token is None:
-                        token = usr.generate_auth_token
+                        token, date = generate_auth_token()
+                        usr.current_auth_token = token
+                        usr.last_action = date
+                        db.session.commit()
                     session['user'] = usr.current_auth_token
                     return redirect(url_for("api.quantify"))
                 else:

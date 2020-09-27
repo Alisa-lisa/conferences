@@ -1,4 +1,3 @@
-1. admin
+1. admin: check cascade delition
 2. test
-3. connect to docker postgres
 4. config file/env variables get into docker

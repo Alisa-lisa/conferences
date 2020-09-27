@@ -22,36 +22,44 @@ def admin_panel():
     if 'user' in session:
         usr = db.session.query(User)\
                 .filter(User.current_auth_token == session['user'])\
+                .filter(User.current_auth_token != None)\
                 .first()
-
-        if request.method == "POST":
-            if request.form['btn'] == "download":
-                try:
-                    start = (request.form['start'])
-                    end = (request.form['end'])
-                    results = db.session.query(Quantify)\
-                            .filter(Quantify.usr_id == usr.id)\
-                            .filter(Quantify.timestamp >= start)\
-                            .filter(Quantify.timestamp < end)\
-                            .all()
-                    with open("results.csv", 'w') as o:
-                        writer = csv.writer(o)
-                        for item in results:
-                            writer.writerow(item.to_list())
-                    return send_file("results.csv")
-                except Exception as ex:
-                    print(f"can not collect data into file due to {ex}")
+        logger.info(f"current user is id {usr.id}")
+        if usr is not None:
+            if request.method == "POST":
+                if request.form['btn'] == "download":
+                    try:
+                        start = (request.form['start'])
+                        end = (request.form['end'])
+                        results = db.session.query(Quantify)\
+                                .filter(Quantify.usr_id == usr.id)\
+                                .filter(Quantify.timestamp >= start)\
+                                .filter(Quantify.timestamp < end)\
+                                .all()
+                        with open("results.csv", 'w') as o:
+                            writer = csv.writer(o)
+                            for item in results:
+                                writer.writerow(item.to_list())
+                        return send_file("results.csv")
+                    except Exception as ex:
+                        print(f"can not collect data into file due to {ex}")
+                        return render_template("admin.html")
+                elif request.form["btn"] == "delete user":
+                    try:
+                        db.session.delete(usr)
+                        db.session.commit()
+                        return redirect(url_for("api.logout"))
+                    except Exception as ex:
+                        print(f"Could not delete user due to {ex}")
+                        return render_template("admin.html")
+                else:  # delete data for thi user
+                    try:
+                        db.session.query(Quantify).filter(Quantify.usr_id == usr.id).delete()
+                        db.session.commit()
+                    except Exception as ex:
+                        print(f"can not delete rows due to {ex}")
                     return render_template("admin.html")
-            elif request.form["btn"] == "delete user":
-                db.session.delete(usr)
-                db.session.commit()
-                return redirect(url_for("api.logout"))
-            else:  # delete data for thi user
-                # TODO: make sure cascade works the way you think it does
-                db.session.query(Quantify).filter(Quantify.usr_id == usr.id).delete()
-                db.session.commit()
-                return render_template("admin.html")
-        else:
-            return render_template('admin.html')
+            else:
+                return render_template('admin.html')
     return redirect(url_for('api.login'))
 

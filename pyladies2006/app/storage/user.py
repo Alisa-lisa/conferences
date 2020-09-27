@@ -13,7 +13,7 @@ class User(db.Model):
     pwhash = db.Column(db.String, unique=True)
     current_auth_token = db.Column(db.String(120), index=True)
     last_action = db.Column(db.DateTime)
-    forms = db.relationship('Quantify', backref='users', lazy=True, cascade="all, delete")
+    forms = db.relationship('Quantify', backref='users', lazy=True, cascade="delete")
     
     def __init__(self, username, password):
         self.username = username
@@ -32,11 +32,7 @@ class User(db.Model):
                 self.pwhash)
 
 
-    def generate_auth_token(self):
-        """Generate an auth token and save it to the `current_auth_token` column."""
-        self.current_auth_token = str(uuid.uuid4)
-        self.last_action = datetime.utcnow()
-        db.session.add(self)
-        db.session.commit()
-        return self.current_auth_token 
+def generate_auth_token():
+    """Generate an auth token and save it to the `current_auth_token` column."""
+    return str(uuid.uuid4()), datetime.datetime.today()
 
