@@ -1,0 +1,2 @@
+start-notebook:
+	jupyter notebook

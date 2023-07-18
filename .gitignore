@@ -1,4 +1,7 @@
 data/
+EP_2023/data/*
+EP_2023/data/*
+
 *~
 .#*
 .DS_Store
@@ -65,3 +68,4 @@ version.texi
 no_llvm_build
 profile_example.py
 *.csv
+*/.ipynb_checkpoints/

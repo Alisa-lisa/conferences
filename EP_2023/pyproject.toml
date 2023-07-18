@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ep-2023"
+version = "0.1.0"
+description = "Rudimental analysis"
+authors = ["alisa <alisa.dammer@gmail.com>"]
+readme = "README.md"
+packages = [{include = "ep_2023"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+notebook = "^6.5.4"
+polars = "^0.18.7"
+numpy = "^1.25.1"
+matplotlib = "^3.7.2"
+pandas = "^2.0.3"
+statsmodels = "^0.14.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
