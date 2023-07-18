@@ -1,2 +1,3 @@
 start-notebook:
+	source .venv/ep-2023-e1-f7odT-py3.11/bin/activate
 	jupyter notebook
