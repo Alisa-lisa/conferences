@@ -1,7 +1,3 @@
-data/
-EP_2023/data/*
-EP_2023/data/*
-
 *~
 .#*
 .DS_Store
@@ -70,4 +66,5 @@ profile_example.py
 # *.csv
 */.ipynb_checkpoints/
 */.venv/
+/EP_2023/data/.~lock.*
 
